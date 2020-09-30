@@ -22,6 +22,7 @@ import logging
 import os
 import random
 import timeit
+import time
 
 import numpy as np
 import torch
@@ -167,6 +168,7 @@ def train(args, train_dataset, model, tokenizer):
     # Added here for reproductibility
     set_seed(args)
 
+    train_start = time.time()
     for _ in train_iterator:
         epoch_iterator = tqdm(train_dataloader, desc="Iteration", disable=args.local_rank not in [-1, 0])
         for step, batch in enumerate(epoch_iterator):
@@ -258,6 +260,14 @@ def train(args, train_dataset, model, tokenizer):
         if args.max_steps > 0 and global_step > args.max_steps:
             train_iterator.close()
             break
+
+    train_total_time = time.time() - train_start
+    print ("INFO: *** Total time to train is : {} sec".format(train_total_time))
+    if args.max_steps == -1:
+        #print ("##### TODO ##### ")
+    else:
+        training_seq_per_sec = (args.per_gpu_train_batch_size * args.max_steps * args.n_gpu)/train_total_time
+        print ("INFO: Total training sequences/sec = {} seq/sec".format(training_seq_per_sec))
 
     if args.local_rank in [-1, 0]:
         tb_writer.close()
