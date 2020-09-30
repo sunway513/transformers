@@ -264,7 +264,7 @@ def train(args, train_dataset, model, tokenizer):
     train_total_time = time.time() - train_start
     print ("INFO: *** Total time to train is : {} sec".format(train_total_time))
     if args.max_steps == -1:
-        #print ("##### TODO ##### ")
+        print ("##### TODO ##### ")
     else:
         training_seq_per_sec = (args.per_gpu_train_batch_size * args.max_steps * args.n_gpu)/train_total_time
         print ("INFO: Total training sequences/sec = {} seq/sec".format(training_seq_per_sec))
